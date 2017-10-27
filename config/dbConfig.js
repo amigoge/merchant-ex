@@ -1,0 +1,14 @@
+module.exports={
+	local:{
+		host:'localhost',
+		port:27017,
+		user:'',
+		pass:''
+	},
+	cloud:{
+		host:'localhost',
+		port:27017,
+		user:'',
+		pass:''
+	}
+}
