@@ -1,30 +1,48 @@
-var _=require('underscore');
-var Address=require('../model/address');
-// 取得指定文章
-exports.getOne = function(id){
-	return _.find(postList,{id:id});
+var _ = require('underscore');
+var Address = require('../model/address');
+// 取得指定地址
+exports.getOne = function (id, next, callback) {
+    Address.findOne({_id: id}).lean().exec(function (error, result) {
+        if (error)
+            return next(error);
+
+        callback(result);
+    })
 }
-// 取得所有文章
-exports.getAll = function(callback){
-	Address.find().lean().exe(function(error,result){
-		callback(result);
-	})
+// 取得所有地址
+exports.getAll = function (next, callback) {
+    Address.find().lean().exec(function (error, result) {
+        if (error)
+            return next(error)
+
+        callback(result);
+    })
 }
-// 新增文章
-exports.create = function(data,callback){
-	var address=new Address(data);
-	address.save(function(error,result){
-		if(error)
-			throw error;
-		
-		callback( result.toObject());
-	})
+// 新增地址
+exports.create = function (data, next, callback) {
+    var address = new Address(data);
+    address.save(function (error, result) {
+        if (error)
+            next(error);
+
+        callback(result.toObject());
+    })
 }
-// 更新文章
-exports.update = function(id){
-	return postList;
+// 更新地址
+exports.update = function (idd, data, next, callback) {
+    Address.update({_id: id}, data).exec(function (error, result) {
+        if (error)
+            next(error);
+
+        callback(result.ok == 1 ? {success: true} : {success: false});
+    })
 }
-// 刪除文章
-exports.update = function(id){
-	return postList;
+// 刪除地址
+exports.delete = function (id, next, callback) {
+    Address.findByIdAndRemove(id, function (error, result) {
+        if (error)
+            next(error);
+
+        callback(result);
+    })
 }

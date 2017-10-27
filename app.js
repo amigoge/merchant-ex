@@ -5,16 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose=require('mongoose');
-var dbConfig=require('./config/dbConfig').local;
 
-var connect=`mongodb://${dbConfig.host}:${dbConfig.port}/merchant-ex`;
+// connect to mongoDB
+var dbConfig=require('./config/dbConfig').cloud;
+var connect=`mongodb://${dbConfig.user}:${dbConfig.pass}${dbConfig.host}`;
 mongoose.connect(connect,{
   useMongoClient:true
 });
 var db=mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-var authFilter=require('./filter/authFilter');// 驗證用filter
+var authFilter=require('./filter/authFilter');// auth filter
 var indexRouter = require('./routes/index');        // 前台的routing
 var userRouter = require('./routes/users');        // 後台的routing
 var apiRouter = require('./routes/api');
