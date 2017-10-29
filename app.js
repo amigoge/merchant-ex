@@ -8,7 +8,7 @@ var mongoose=require('mongoose');
 
 // connect to mongoDB
 var dbConfig=require('./config/dbConfig').cloud;
-var connect=`mongodb://${dbConfig.user}:${dbConfig.pass}${dbConfig.host}`;
+var connect=`mongodb://${dbConfig.host}:${dbConfig.port}/merchant-ex`;
 mongoose.connect(connect,{
   useMongoClient:true
 });

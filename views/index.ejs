@@ -1,42 +1,270 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="/javascripts/jquery2.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
-  </head>
-  <body>
-    <!--功能連結-->
-    <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">市集系統</a>
-      </div>
+<head>
+	<title><%= title %></title>
+	<link rel='stylesheet' href='/stylesheets/bootstrap.min.css'/>
+	<link rel='stylesheet' href='/stylesheets/bootstrap-select.css'/>
+	<link rel='stylesheet' href='/stylesheets/style.css'/>
+	<script src="/javascripts/jquery2.min.js"></script>
+	<script src="/javascripts/underscore-min.js"></script>
+	<script src="/javascripts/bootstrap.min.js"></script>
+	<script src="/javascripts/bootstrap-select.js"></script>
+	<script src="/javascripts/vue.js"></script>
+</head>
+<body>
+<!--功能連結-->
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+			        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">市集系統</a>
+		</div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="/">後台管理 <span class="sr-only">(current)</span></a></li>
-        </ul>
-        <!--搜尋功能-->
-        <form class="navbar-form navbar-left">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search">
-          </div>
-          <button type="submit" class="btn btn-default">搜尋</button>
-        </form>
-      </div>
-    </div>
-  </nav>
-    <!--CRUD招商文-->
-  </body>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/">後台管理 <span class="sr-only">(current)</span></a></li>
+			</ul>
+			<!--搜尋功能-->
+			<form class="navbar-form navbar-left">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search">
+				</div>
+				<button type="submit" class="btn btn-default">搜尋</button>
+			</form>
+		</div>
+	</div>
+</nav>
+<!--CRUD招商文-->
+<div class="container" id="app">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>招商資訊</h1>
+			<div class="panel panel-default panel-table">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col col-xs-6">
+
+						</div>
+						<div class="col col-xs-6 text-right">
+							<button type="button"
+							        v-on:click="showCreateModal"
+							        class="btn btn-sm btn-primary btn-create">
+								新增
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<table class="table table-striped table-bordered table-list">
+						<thead>
+						<tr>
+							<th class="text-center col-md-2">操作</th>
+							<th class="text-center col-md-2">ID</th>
+							<th class="text-center col-md-6">標題</th>
+							<th class="text-center col-md-2">地點</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr v-for="post in postList">
+							<td align="center">
+								<button v-on:click="showUpdateModal(post._id)"
+								        class="btn btn-warning">
+									編輯
+								</button>
+								<button v-on:click="showDeleteModal(post._id)"
+								        class="btn btn-danger">
+									刪除
+								</button>
+							</td>
+							<td>{{post._id}}</td>
+							<td>{{post.title}}</td>
+							<td>{{post.city}}</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div class="panel-footer">
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!--新增modal-->
+	<div class="modal fade createModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close"
+					        data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">新增招商資訊</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form">
+						<fieldset>
+							<!-- Form Name -->
+							<legend>招商內容</legend>
+							<!-- 標題-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">標題</label>
+								<div class="col-sm-10">
+									<input type="text" v-model="createdPost.title"
+									       placeholder="標題" class="form-control">
+								</div>
+							</div>
+							<!-- 內容-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">內容</label>
+								<div class="col-sm-10">
+									<textarea type="text" rows="6"
+									          v-model="createdPost.content"
+									          placeholder="內容" class="form-control"></textarea>
+								</div>
+							</div>
+							<!-- 城市選擇-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">城市</label>
+								<div class="col-sm-10">
+									<select class="selectpicker"
+									        v-model="createdPost.city"
+									        disabled>
+										<option value="台中市">台中市</option>
+									</select>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary"
+					        v-on:click="createPost">儲存
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--編輯modal-->
+	<div class="modal fade updateModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close"
+					        data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">編輯招商資訊</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form">
+						<fieldset>
+							<!-- Form Name -->
+							<legend>招商內容</legend>
+							<!-- 標題-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">標題</label>
+								<div class="col-sm-10">
+									<input type="text" v-model="selectedPost.title"
+									       placeholder="標題" class="form-control">
+								</div>
+							</div>
+							<!-- 內容-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">內容</label>
+								<div class="col-sm-10">
+									<textarea type="text" rows="6"
+									          v-model="selectedPost.content"
+									          placeholder="內容" class="form-control"></textarea>
+								</div>
+							</div>
+							<!-- 城市選擇-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">城市</label>
+								<div class="col-sm-10">
+									<select class="selectpicker"
+									        v-model="selectedPost.city"
+									        disabled>
+										<option value="台中市">台中市</option>
+									</select>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" v-on:click="updatePost">儲存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--刪除modal-->
+	<div class="modal fade deleteModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close"
+					        data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">刪除招商資訊</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form">
+						<fieldset>
+							<!-- Form Name -->
+							<legend>招商內容</legend>
+							<!-- 標題-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">標題</label>
+								<div class="col-sm-10">
+									<input type="text" disabled
+									       v-model="selectedPost.title"
+									       placeholder="標題" class="form-control">
+								</div>
+							</div>
+							<!-- 內容-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">內容</label>
+								<div class="col-sm-10">
+									<textarea type="text" rows="6" disabled
+									          v-model="selectedPost.content"
+									          placeholder="內容" class="form-control"></textarea>
+								</div>
+							</div>
+							<!-- 城市選擇-->
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="textinput">城市</label>
+								<div class="col-sm-10">
+									<select class="selectpicker"
+									        v-model="selectedPost.city"
+									        disabled>
+										<option value="台中市">台中市</option>
+									</select>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-danger" v-on:click="deletePost">刪除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script src="/javascripts/vue/index.js"></script>
 </html>
