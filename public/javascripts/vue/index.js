@@ -2,34 +2,34 @@ var app = new Vue({
     el: '#app',
     mounted: function () {
         this.fetchAllPost();
-        eventHandl();
+        eventHandl(this);
 
         // datepicker的event handler
-        function eventHandl() {
+        function eventHandl(instance) {
             $('.createModal .startDate').datepicker({
                 format: 'yyyy/mm/dd',
                 startDate: new Date()
             }).on('changeDate', (e)=> {
-                this.createdPost.marketStart = $(e.currentTarget).val()
+                instance.createdPost.marketStart = $(e.currentTarget).val()
             });
             $('.createModal .endDate').datepicker({
                 format: 'yyyy/mm/dd',
                 startDate: new Date()
             }).on('changeDate', (e)=> {
-                this.createdPost.marketEnd = $(e.currentTarget).val()
+                instance.createdPost.marketEnd = $(e.currentTarget).val()
             });
 
             $('.updateModal .startDate').datepicker({
                 format: 'yyyy/mm/dd',
                 startDate: new Date()
             }).on('changeDate', (e)=> {
-                this.selectedPost.marketStart = $(e.currentTarget).val()
+                instance.selectedPost.marketStart = $(e.currentTarget).val()
             });
             $('.updateModal .endDate').datepicker({
                 format: 'yyyy/mm/dd',
                 startDate: new Date()
             }).on('changeDate', (e)=> {
-                this.selectedPost.marketEnd = $(e.currentTarget).val()
+                instance.selectedPost.marketEnd = $(e.currentTarget).val()
             });
         }
     },
